@@ -1,0 +1,71 @@
+package Intuit;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Properties;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+public class SBGECcaseCreation {
+	static Properties prop;
+	public static void main(String[] args) throws FileNotFoundException {
+		  prop = new Properties();
+    	  File f = new File("C:/Users/user/eclipse-workspace/my project/src/config/config.properties");
+    	 
+    	  FileReader obj = new FileReader(f); 
+    	  try {
+			prop.load(obj);
+		} catch (IOException e) {
+			// TODO   catch block
+			e.printStackTrace();
+		}
+		 
+        // declaration and instantiation of objects/variables
+		System.setProperty("webdriver.chrome.driver",prop.getProperty("Driver"));
+		WebDriver driver = new ChromeDriver();
+		
+		//Maximize The Window
+		 driver.manage().window().maximize();
+		 
+		 //Launch chrome and got to base url
+        String baseUrl =  prop.getProperty("BaseUrl");
+        driver.get(baseUrl);
+        System.out.println("URL ::" + prop.getProperty("BaseUrl"));
+        
+        //set the UserName and Password
+        driver.findElement(By.id("username")).sendKeys(prop.getProperty("UserName"));						
+        driver.findElement(By.id("password")).sendKeys(prop.getProperty("Password"));
+        
+        //login to the Website
+        WebElement login = driver.findElement(By.id("Login"));
+        login.submit();
+        System.out.println("Login submit");
+        
+        //Navigate to the url
+        driver.navigate().to(prop.getProperty("AccountUrl"));
+       
+        //Wait for the element to load
+        WebDriverWait wait=new WebDriverWait(driver, 20);
+        WebElement QboCase =  wait.until(
+    	        ExpectedConditions.visibilityOfElementLocated(By.xpath(prop.getProperty("QBOCaseButtonxPath"))));
+        QboCase.click();
+        System.out.println("Click submit");
+        
+       //Wait for element to load
+        WebDriverWait wait1=new WebDriverWait(driver, 10);
+        
+         // Test click on Save
+        WebElement Save =  wait1.until(
+    	        ExpectedConditions.visibilityOfElementLocated(By.xpath(prop.getProperty("Savexpath"))));
+        Save.click();
+        System.out.println("Save submit");
+        driver.close();
+          }
+}
